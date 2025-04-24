@@ -10,8 +10,8 @@ def tridiagonal_method(A, C, B, F):
     alpha, beta = [k1], [m1]
     n = len(F)
     for i in range(n - 1):
-        alpha.append(B[i] / (-C[i] - A[i] * alpha[i]))
-        beta.append((A[i] * beta[i] + F[i]) / (-C[i] - A[i] * alpha[i]))
+        alpha.append(B[i] / (C[i] - A[i] * alpha[i]))
+        beta.append((A[i] * beta[i] + F[i]) / (C[i] - A[i] * alpha[i]))
 
     y = [0.0] * n
     y[-1] = (m2 + k2 * beta[n - 1]) / (1 - k2 * alpha[n - 1])
@@ -24,35 +24,30 @@ def get_matrices(func, lcond, rcond, a, b, n):
     X = [a + i * h for i in range(1,n)]
 
     A = [1 / h ** 2] * (n)
-    C = [-2 / h ** 2] * (n)
+    C = [2 / h ** 2] * (n)
     B = [1 / h ** 2] * (n)
     F = [-func(x) for x in X]
     X = [a] + X + [b]
 
     if lcond[0]:  # производная
-        A = [0.0] + A
-        C = [-1 / h] + C
-        B = [1 / h] + B
-        F = [lcond[1]] + F
+        C = [1.0] + C
+        B = [1.0] + B
+        F = [-h * lcond[1]] + F
     else:  # функция
-        A = [0.0] + A
         C = [1.0] + C
         B = [0.0] + B
         F = [lcond[1]] + F
 
     if rcond[0]:
-        A = A + [-1 / h]
-        C = C + [1 / h]
-        B = B + [0.0]
-        F = F + [rcond[1]]
+        A = A + [1.0]
+        C = C + [1.0]
+        F = F + [h * rcond[1]]
     else:
         A = A + [0.0]
         C = C + [1.0]
-        B = B + [0.0]
         F = F + [rcond[1]]
 
     return A, C, B, F, X
-
 
 def examples(example_num):
     ex = {
@@ -82,7 +77,7 @@ def plot_max_errors(a, b, lcond, rcond, exact_sol, max_nodes):
 
 if __name__ == "__main__":
     a, b = -np.pi / 2, np.pi / 2
-    lcond, rcond, exact_solution = examples(3)
+    lcond, rcond, exact_solution = examples(1)
 
     n = 100
     A, C, B, F, X = get_matrices(equation_rhs, lcond, rcond, a, b, n)

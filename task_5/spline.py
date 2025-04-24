@@ -21,25 +21,21 @@ def get_coefficients(x, y, lcond, rcond):
         rhs.append(3 * ((y[i + 1] - y[i]) / h[i] - (y[i] - y[i - 1]) / h[i - 1]))
 
     if lcond[0]:  # первая производная
-        A = [0.0] + A
-        C = [2 * h[0]] + C
-        B = [h[0]] + B
-        rhs = [3 * ((y[1] - y[0]) / h[0] - lcond[1])] + rhs
+        C = [1.0] + C
+        B = [-0.5] + B
+        rhs = [(1.5 / h[0]) * ((y[1] - y[0]) / h[0] - lcond[1])] + rhs
     else:  # вторая производная
-        A = [0.0] + A
         C = [1.0] + C
         B = [0.0] + B
         rhs = [lcond[1]] + rhs
 
     if rcond[0]:
-        A = A + [2 * h[n - 1]]
-        C = C + [h[n - 1]]
-        B = B + [0.0]
-        rhs = rhs + [3 * ((y[n] - y[n - 1]) / h[n - 1] - rcond[1])]
+        A = A + [-2.0]
+        C = C + [1.0]
+        rhs = rhs + [(3 / h[n-1]) * ((y[n] - y[n - 1]) / h[n - 1] - rcond[1])]
     else:
         A = A + [0.0]
         C = C + [1.0]
-        B = B + [0.0]
         rhs = rhs + [rcond[1]]
 
     c = task_5.tridiagonal_method(A, C, B, rhs)
