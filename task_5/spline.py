@@ -61,9 +61,9 @@ def plot_spline_vs_function(f, a, b, n, lcond, rcond):
 
     plt.figure(figsize=(10, 6))
     plt.plot(xp, f(xp), label='f(x)')
-    plt.plot(xp, sp, '--', label='Spline')
+    plt.plot(xp, sp, label='Spline', linestyle='--')
     plt.legend()
-    plt.title('Сравнение функции Рунге и кубического сплайна')
+    plt.title('Сравнение функции и сплайна')
     plt.grid()
     plt.show()
 
